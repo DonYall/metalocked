@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const Body = z.object({ circleId: z.string().uuid() });
+const Body = z.object({ circleId: z.uuid() });
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
