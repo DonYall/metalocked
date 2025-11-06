@@ -13,19 +13,20 @@ type Props = {
   children: ReactElement;
   mode: "create" | "edit";
   task?: TaskShape;
+  initialFrequency?: "daily" | "weekly" | "none";
   onSaved?: () => void;
 };
 
-export default function TaskEditorDialog({ children, mode, task, onSaved }: Props) {
+export default function TaskEditorDialog({ children, mode, task, initialFrequency, onSaved }: Props) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(task?.title ?? "");
-  const [frequency, setFrequency] = useState<"daily" | "weekly" | "none">(task?.frequency ?? "daily");
+  const [frequency, setFrequency] = useState<"daily" | "weekly" | "none">(task?.frequency ?? initialFrequency ?? "daily");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (open) {
       setTitle(task?.title ?? "");
-      setFrequency(task?.frequency ?? (mode === "create" ? "daily" : "daily"));
+      setFrequency(task?.frequency ?? (mode === "create" ? initialFrequency ?? "daily" : "daily"));
     }
   }, [open, task, mode]);
 
@@ -81,7 +82,7 @@ export default function TaskEditorDialog({ children, mode, task, onSaved }: Prop
             <Button variant="secondary" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={onSubmit} disabled={saving || title.trim().length < 2}>
+            <Button className="border" onClick={onSubmit} disabled={saving || title.trim().length < 2}>
               {saving ? "Saving…" : "Save"}
             </Button>
           </div>

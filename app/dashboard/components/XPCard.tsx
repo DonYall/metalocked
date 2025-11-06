@@ -33,6 +33,7 @@ export default function XPCard() {
     setLevel(level);
     setNeed(need);
     setProgress(progress);
+    console.log({ xp, level, need, progress });
   };
 
   useDashboardRefresh(refresh);
@@ -53,8 +54,11 @@ export default function XPCard() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <LevelIcon level={level} size={64} />
-            <div className="flex flex-col justify-between">
+            <div className="flex gap-2 items-center">
               <h1 className="text-lg font-semibold">Level {level}</h1>
+              <span className="text-sm text-muted-foreground">
+                {xp} / {need} XP
+              </span>
             </div>
           </div>
         </CardHeader>

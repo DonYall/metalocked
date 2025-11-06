@@ -58,7 +58,9 @@ export async function GET(_: NextRequest) {
     let completedForPeriod = false;
     if (t.frequency === "daily") completedForPeriod = completedTodaySet.has(t.id);
     else if (t.frequency === "weekly") completedForPeriod = completedThisWeekSet.has(t.id);
-    else completedForPeriod = false;
+    else if (t.frequency === "none") {
+      completedForPeriod = lastByTask.has(t.id);
+    } else completedForPeriod = false;
 
     let streakAfterPotential = 1;
     const last = lastByTask.get(t.id) ?? null;
