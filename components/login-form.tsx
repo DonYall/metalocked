@@ -29,6 +29,17 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         password,
       });
       if (error) throw error;
+
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("username")
+        .eq("id", (await supabase.auth.getUser()).data.user?.id)
+        .single();
+      if (userError) throw userError;
+      if (!userData?.username) {
+        router.push("/onboarding");
+        return;
+      }
       router.push("/dashboard");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");

@@ -71,42 +71,48 @@ export default function TaskCard() {
     return arr;
   }, [filtered, sort, sortDir]);
 
+  function TaskTabs({ className }: { className?: string }) {
+    return (
+      <Tabs value={filter} onValueChange={(v) => setFilter(v as any)} className={`w-full ${className}`}>
+        <TabsList className="bg-inherit p-0">
+          <TabsTrigger value="all">
+            All{" "}
+            <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
+              {items.length > 9 ? "9+" : items.length}
+            </div>
+          </TabsTrigger>
+
+          <TabsTrigger value="daily">
+            Daily{" "}
+            <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
+              {items.filter((t) => t.frequency === "daily").length > 9 ? "9+" : items.filter((t) => t.frequency === "daily").length}
+            </div>
+          </TabsTrigger>
+          <TabsTrigger value="weekly">
+            Weekly{" "}
+            <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
+              {items.filter((t) => t.frequency === "weekly").length > 9 ? "9+" : items.filter((t) => t.frequency === "weekly").length}
+            </div>
+          </TabsTrigger>
+          <TabsTrigger value="oneoff">
+            One-off{" "}
+            <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
+              {items.filter((t) => t.frequency === "none").length > 9 ? "9+" : items.filter((t) => t.frequency === "none").length}
+            </div>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <h1 className="font-semibold text-xl">Tasks</h1>
-        <Tabs value={filter} onValueChange={(v) => setFilter(v as any)} className="w-full">
-          <TabsList className="bg-inherit">
-            <TabsTrigger value="all">
-              All{" "}
-              <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
-                {items.length > 9 ? "9+" : items.length}
-              </div>
-            </TabsTrigger>
-
-            <TabsTrigger value="daily">
-              Daily{" "}
-              <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
-                {items.filter((t) => t.frequency === "daily").length > 9 ? "9+" : items.filter((t) => t.frequency === "daily").length}
-              </div>
-            </TabsTrigger>
-            <TabsTrigger value="weekly">
-              Weekly{" "}
-              <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
-                {items.filter((t) => t.frequency === "weekly").length > 9 ? "9+" : items.filter((t) => t.frequency === "weekly").length}
-              </div>
-            </TabsTrigger>
-            <TabsTrigger value="oneoff">
-              One-off{" "}
-              <div className="ml-1 inline-flex items-center justify-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium tabular-nums">
-                {items.filter((t) => t.frequency === "none").length > 9 ? "9+" : items.filter((t) => t.frequency === "none").length}
-              </div>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <TaskTabs className="hidden lg:flex" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="default" size="sm" title="Sort" className="border">
+            <Button variant="default" size="sm" title="Sort" className="border ml-auto">
               <Filter className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -163,8 +169,9 @@ export default function TaskCard() {
           </Button>
         </TaskEditorDialog>
       </div>
-
-      <Card className="px-6 py-3">
+      <TaskTabs className="lg:hidden" />
+      <Card className="px-6 py-3 gap-0">
+        {" "}
         <ul className="divide-y">
           {displayed.map((t) => (
             <TaskRow key={t.id} task={t} onChanged={emitDashboardRefresh} />

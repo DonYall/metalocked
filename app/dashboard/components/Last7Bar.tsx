@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, CartesianGrid } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -51,9 +51,7 @@ export default function Last7Bar() {
   const chartConfig = {
     xp: {
       label: "XP",
-    },
-    count: {
-      label: "Completions",
+      color: "var(--accent-2)",
     },
   } satisfies ChartConfig;
 
@@ -63,36 +61,32 @@ export default function Last7Bar() {
         <CardTitle className="text-base font-semibold">Last 7 days</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-32">
-          <ChartContainer config={chartConfig}>
-            <BarChart data={data} className="fill-accent-2">
-              <CartesianGrid vertical={false} opacity={0.1} />
-              <XAxis
-                dataKey="date"
-                tickFormatter={(date) => {
-                  const d = new Date(date + "T00:00");
-                  return d.toLocaleDateString("en-US", { weekday: "short" });
-                }}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-                interval={0}
-                allowDuplicatedCategory={true}
-              />
-              <Bar dataKey="xp" radius={8} barSize={24} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-            </BarChart>
-          </ChartContainer>
-        </div>
-        <div className="mt-3 text-xs text-muted-foreground">
-          {data.length > 0 && (
-            <>
-              <span>Total XP: {data.reduce((s, d) => s + (d.xp || 0), 0)}</span>
-              <span className="mx-2">•</span>
-              <span>Completions: {data.reduce((s, d) => s + (d.count || 0), 0)}</span>
-            </>
-          )}
-        </div>
+        <ChartContainer config={chartConfig} className="min-h-32 w-full max-h-48">
+          <BarChart data={data} className="fill-accent-2">
+            <CartesianGrid vertical={false} opacity={0.1} />
+            <XAxis
+              dataKey="date"
+              tickFormatter={(date) => {
+                const d = new Date(date + "T00:00");
+                return d.toLocaleDateString("en-US", { weekday: "short" });
+              }}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12 }}
+              interval={0}
+              allowDuplicatedCategory={true}
+            />
+            <Bar dataKey="xp" radius={8} barSize={24} />
+            <ChartTooltip
+              labelFormatter={(date) => {
+                const d = new Date(date + "T00:00");
+                return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+              }}
+              cursor={false}
+              content={<ChartTooltipContent hideIndicator />}
+            />
+          </BarChart>
+        </ChartContainer>
       </CardContent>
     </Card>
   );

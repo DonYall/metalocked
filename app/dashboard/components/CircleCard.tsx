@@ -120,11 +120,6 @@ function CircleRow({ circle, onChanged }: { circle: CircleVM; onChanged: () => v
             </span>
           )}
           {typeof circle.myXp === "number" && <span>{circle.myXp} XP</span>}
-          {circle.joinCode && circle.isOwner && (
-            <span className="truncate lg:hidden">
-              Code: <code className="text-muted-foreground">{circle.joinCode}</code>
-            </span>
-          )}
         </div>
       </div>
 
