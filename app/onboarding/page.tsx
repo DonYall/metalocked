@@ -8,20 +8,8 @@ export default async function OnboardingPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) {
-    return (
-      <main className="container mx-auto p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Sign in required</CardTitle>
-          </CardHeader>
-          <CardContent>Please sign in to continue.</CardContent>
-        </Card>
-      </main>
-    );
-  }
 
-  const { data: profile } = await supabase.from("users").select("username, display_name").eq("id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("users").select("username, display_name").eq("id", user?.id).maybeSingle();
 
   if (profile?.username) {
     redirect("/dashboard");
