@@ -6,19 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useDashboardRefresh } from "@/lib/useDashboardRefresh";
 
-type Completion = { completed_at: string; xp_awarded: number };
+type Completion = { completed_at: string; rep_awarded: number };
 
 export default function Last7Bar() {
-  const [data, setData] = useState<{ date: string; xp: number; count: number }[]>([]);
+  const [data, setData] = useState<{ date: string; rep: number; count: number }[]>([]);
 
   function bucket7daysLocal(completions: Completion[]) {
-    const days: { date: string; xp: number; count: number }[] = [];
+    const days: { date: string; rep: number; count: number }[] = [];
     const now = new Date();
     for (let i = 6; i >= 0; i--) {
       const d = new Date(now);
       d.setDate(now.getDate() - i);
       const key = d.toLocaleDateString("en-CA");
-      days.push({ date: key, xp: 0, count: 0 });
+      days.push({ date: key, rep: 0, count: 0 });
     }
     const idx = new Map(days.map((d, i) => [d.date, i]));
 
@@ -26,9 +26,8 @@ export default function Last7Bar() {
       const local = new Date(c.completed_at);
       const key = local.toLocaleDateString("en-CA");
       const i = idx.get(key);
-      console.log({ c, local, key, i });
       if (i !== undefined) {
-        days[i].xp += c.xp_awarded ?? 0;
+        days[i].rep += c.rep_awarded ?? 0;
         days[i].count += 1;
       }
     }
@@ -39,7 +38,6 @@ export default function Last7Bar() {
     const res = await fetch("/api/stats/last7", { cache: "no-store" });
     const json = await res.json();
     setData(bucket7daysLocal(json.completions ?? []));
-    console.log(data);
   }
 
   useEffect(() => {
@@ -49,8 +47,8 @@ export default function Last7Bar() {
   useDashboardRefresh(fetchData);
 
   const chartConfig = {
-    xp: {
-      label: "XP",
+    rep: {
+      label: "rep",
       color: "var(--accent-2)",
     },
   } satisfies ChartConfig;
@@ -76,7 +74,7 @@ export default function Last7Bar() {
               interval={0}
               allowDuplicatedCategory={true}
             />
-            <Bar dataKey="xp" radius={8} barSize={24} />
+            <Bar dataKey="rep" radius={8} barSize={24} />
             <ChartTooltip
               labelFormatter={(date) => {
                 const d = new Date(date + "T00:00");

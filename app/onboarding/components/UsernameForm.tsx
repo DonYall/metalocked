@@ -54,10 +54,11 @@ export default function UsernameForm({ initialDisplayName = "" }: { initialDispl
 
     setSaving(true);
     try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const res = await fetch("/api/profile/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, display_name: displayName }),
+        body: JSON.stringify({ username, display_name: displayName, timezone }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Failed to save");

@@ -119,7 +119,7 @@ function CircleRow({ circle, onChanged }: { circle: CircleVM; onChanged: () => v
               Rank #{circle.myRank}
             </span>
           )}
-          {typeof circle.myXp === "number" && <span>{circle.myXp} XP</span>}
+          {typeof circle.myXp === "number" && <span>{circle.myXp} rep</span>}
         </div>
       </div>
 

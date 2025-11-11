@@ -28,7 +28,7 @@ export default async function CirclePage({ params }: { params: { id: string } })
                   <span className="w-6 text-center font-semibold">{i + 1}</span>
                   <span className="font-medium">{m.name}</span>
                 </div>
-                <span className="text-sm text-muted-foreground">{m.xp_total} XP</span>
+                <span className="text-sm text-muted-foreground">{m.reputation} rep</span>
               </li>
             ))}
             {members.length === 0 && <div className="p-3 text-sm text-muted-foreground">No members yet.</div>}
@@ -47,9 +47,7 @@ export default async function CirclePage({ params }: { params: { id: string } })
                 <div className="text-sm">
                   <span className="font-medium">{e.display_name ?? "Member"}</span> completed <span className="font-medium">{e.task_title}</span>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  +{e.xp_awarded} XP · streak {e.streak_after} · {new Date(e.completed_at).toLocaleString()}
-                </div>
+                <EventRow e={e} />
               </li>
             ))}
             {events.length === 0 && <div className="text-sm text-muted-foreground">No activity yet.</div>}
@@ -57,5 +55,14 @@ export default async function CirclePage({ params }: { params: { id: string } })
         </CardContent>
       </Card>
     </main>
+  );
+}
+
+function EventRow({ e }: { e: any }) {
+  "use client";
+  return (
+    <div className="text-xs text-muted-foreground">
+      +{e.rep_awarded} rep · streak {e.streak_after} · {new Date(e.completed_at).toLocaleString()}
+    </div>
   );
 }

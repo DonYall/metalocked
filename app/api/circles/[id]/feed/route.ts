@@ -6,7 +6,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("v_circle_feed")
-    .select("user_id, display_name, task_title, completed_at, xp_awarded, streak_after")
+    .select("user_id, display_name, task_title, completed_at, rep_awarded, streak_after")
     .eq("circle_id", id)
     .order("completed_at", { ascending: false })
     .limit(50);

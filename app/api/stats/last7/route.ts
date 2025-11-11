@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient  } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
   if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const now = new Date();
@@ -12,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error: qErr } = await supabase
     .from("task_completions")
-    .select("completed_at, xp_awarded")
+    .select("completed_at, rep_awarded")
     .eq("user_id", user.id)
     .gte("completed_at", start.toISOString())
     .order("completed_at", { ascending: true });

@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import CircleCard from "./components/CircleCard";
 import RefreshAll from "./components/RefreshAll";
-import XPCard from "./components/XPCard";
+import ReputationCard from "./components/ReputationCard";
 import { Toaster } from "sonner";
 import { createClient } from "@/utils/supabase/server";
 import Last7Bar from "./components/Last7Bar";
+import ReputationSync from "./components/ReputationSync";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -19,6 +20,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="max-w-5xl mx-auto mt-12 p-4">
+      <ReputationSync />
       <Toaster position="bottom-right" theme="dark" />
       <div className="flex gap-2 items-center mb-6">
         <h1 className="text-xl">
@@ -36,7 +38,7 @@ export default async function DashboardPage() {
         </section>
 
         <aside className="space-y-6 sticky top-6 h-min">
-          <XPCard />
+          <ReputationCard />
           <Last7Bar />
           <CircleCard />
         </aside>

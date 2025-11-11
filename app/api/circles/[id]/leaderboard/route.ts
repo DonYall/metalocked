@@ -6,9 +6,9 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("v_circle_leaderboard")
-    .select("user_id, name, xp_total")
+    .select("user_id, name, reputation")
     .eq("circle_id", id)
-    .order("xp_total", { ascending: false })
+    .order("reputation", { ascending: false })
     .limit(25);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ members: data ?? [] });

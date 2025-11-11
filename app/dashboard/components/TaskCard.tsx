@@ -196,12 +196,12 @@ function TaskRow({ task, onChanged }: Props) {
       const res = await fetch("/api/tasks/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ taskId: task.id }),
+        body: JSON.stringify({ taskId: task.id, completedAt: new Date().toISOString() }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Failed");
 
-      toast.success(`${json.xpAwarded} XP 🎉 · streak ${json.streakAfter}`);
+      toast.success(`${json.repAwarded} rep 🎉 · streak ${json.streakAfter}`);
 
       onChanged?.();
     } catch (e) {

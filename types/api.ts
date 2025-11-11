@@ -1,5 +1,5 @@
 // types/api.ts
-export type Frequency = 'daily' | 'weekly' | 'none';
+export type Frequency = "daily" | "weekly" | "none";
 
 export interface TaskDTO {
   id: string;
@@ -16,8 +16,6 @@ export interface CompleteTaskRequest {
 
 export interface CompleteTaskResponse {
   completionId: string;
-  xpAwarded: number;
+  repAwarded: number;
   streakAfter: number;
-  userXpTotal: number;
-  userLevel: number;
 }

@@ -29,25 +29,25 @@ export async function GET(_: NextRequest) {
 
   const { data: lb } = await admin
     .from("v_circle_leaderboard")
-    .select("circle_id, user_id, xp_total")
+    .select("circle_id, user_id, reputation")
     .in("circle_id", circleIds)
-    .order("xp_total", { ascending: false });
+    .order("reputation", { ascending: false });
 
   const rankMap = new Map<string, number>();
-  const xpMap = new Map<string, number>();
+  const repMap = new Map<string, number>();
   (lb ?? []).forEach((row: any, idx: number, arr: any[]) => {
     const pos = arr.filter((x) => x.circle_id === row.circle_id).findIndex((x) => x.user_id === user.id) + 1;
     if (!rankMap.has(row.circle_id) && pos > 0) {
       rankMap.set(row.circle_id, pos);
     }
-    if (row.user_id === user.id) xpMap.set(row.circle_id, row.xp_total);
+    if (row.user_id === user.id) repMap.set(row.circle_id, row.reputation);
   });
 
   const circles = (memberships ?? []).map((m: any) => ({
     id: m.circle_id,
     name: m.circles.name,
     myRank: rankMap.get(m.circle_id) ?? null,
-    myXp: xpMap.get(m.circle_id) ?? null,
+    myXp: repMap.get(m.circle_id) ?? null,
     memberCount: countsMap.get(m.circle_id) ?? null,
     joinCode: m.circles.owner_id === user.id ? m.circles.join_code : null,
     isOwner: m.circles.owner_id === user.id,
