@@ -19,20 +19,22 @@ export async function GET(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  console.log(data);
+  const items = (data ?? []).map((e) => {
+    const taskTitle = Array.isArray(e.tasks) ? e.tasks[0]?.title : (e.tasks as any)?.title;
 
-  const items = (data ?? []).map((e) => ({
-    id: e.id,
-    ts: e.created_at,
-    delta: e.delta,
-    cause: e.cause,
-    label:
-      e.cause === "task_completion"
-        ? `Completed “${e.tasks?.title ?? "a task"}”`
-        : e.cause === "task_missed"
-        ? `Missed “${e.tasks?.title ?? "a task"}”`
-        : e.cause,
-  }));
+    return {
+      id: e.id,
+      ts: e.created_at,
+      delta: e.delta,
+      cause: e.cause,
+      label:
+        e.cause === "task_completion"
+          ? `Completed “${taskTitle ?? "a task"}”`
+          : e.cause === "task_missed"
+          ? `Missed “${taskTitle ?? "a task"}”`
+          : e.cause,
+    };
+  });
 
   return NextResponse.json({ items });
 }
