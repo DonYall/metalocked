@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import { createClient } from "@/utils/supabase/server";
 import Last7Bar from "./components/Last7Bar";
 import ReputationSync from "./components/ReputationSync";
+import NotificationBell from "./components/NotificationBell";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -27,6 +28,7 @@ export default async function DashboardPage() {
           Welcome back, <span className="font-bold">{userName}</span>
         </h1>
         <RefreshAll />
+        <NotificationBell />
         <Button className="p-3">
           <User />
         </Button>
