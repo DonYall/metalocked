@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
     user_id: user.id,
     cause: "task_completion",
     delta: repAwarded,
-    meta: { task_id: taskId, completed_on: completedOn },
+    task_id: taskId,
   });
 
   if (repErr) {
