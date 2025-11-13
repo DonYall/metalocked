@@ -35,11 +35,6 @@ export default function NotificationBell({ limit = 10 }: { limit?: number }) {
   }, []);
 
   const newestTs = items[0]?.ts;
-  const hasUnread = useMemo(() => {
-    if (!newestTs) return false;
-    const lastSeen = localStorage.getItem("notif.lastSeen");
-    return !lastSeen || new Date(newestTs).getTime() > Number(lastSeen);
-  }, [newestTs]);
 
   function handleOpenChange(next: boolean) {
     setOpen(next);
@@ -53,7 +48,6 @@ export default function NotificationBell({ limit = 10 }: { limit?: number }) {
       <DropdownMenuTrigger asChild>
         <Button size="icon" className="relative">
           <Bell className="h-5 w-5" />
-          {hasUnread && <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-emerald-400" />}
         </Button>
       </DropdownMenuTrigger>
 

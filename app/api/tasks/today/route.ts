@@ -17,11 +17,28 @@ export async function GET(_: NextRequest) {
 
   if (tErr) return NextResponse.json({ error: tErr.message }, { status: 500 });
 
-  const now = new Date();
+  const { data: userData, error: uErr } = await supabase.from("users").select("timezone").eq("id", user.id).single();
+
+  if (uErr) return NextResponse.json({ error: uErr.message }, { status: 500 });
+
+  const userTimezone = userData?.timezone || "UTC";
+
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: userTimezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const parts = fmt.formatToParts(new Date());
+  const year = parts.find((p) => p.type === "year")?.value;
+  const month = parts.find((p) => p.type === "month")?.value;
+  const day = parts.find((p) => p.type === "day")?.value;
+  const now = new Date(`${year}-${month}-${day}T00:00:00Z`);
+
   const todayISO = now.toISOString().slice(0, 10);
 
   const getWeekMondayISO = (d: Date) => {
-    const day = d.getUTCDay() || 7;
+    const day = d.getUTCDay();
     const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
     monday.setUTCDate(monday.getUTCDate() - day + 1);
     return monday.toISOString().slice(0, 10);
@@ -65,14 +82,18 @@ export async function GET(_: NextRequest) {
     let streakAfterPotential = 1;
     const last = lastByTask.get(t.id) ?? null;
     if (t.frequency === "daily" && last) {
-      const lastD = new Date(last + "T00:00:00.000Z");
-      const todayD = new Date(todayISO + "T00:00:00.000Z");
+      const [ly, lm, ld] = last.split("-").map(Number);
+      const lastD = new Date(ly, lm - 1, ld);
+      const [ty, tm, td] = todayISO.split("-").map(Number);
+      const todayD = new Date(ty, tm - 1, td);
       const diff = Math.round((todayD.getTime() - lastD.getTime()) / (24 * 3600 * 1000));
       streakAfterPotential = diff === 1 ? 2 : 1;
     }
     if (t.frequency === "weekly" && last) {
-      const lastW = new Date(last + "T00:00:00.000Z");
-      const thisW = new Date(weekISO + "T00:00:00.000Z");
+      const [ly, lm, ld] = last.split("-").map(Number);
+      const lastW = new Date(ly, lm - 1, ld);
+      const [wy, wm, wd] = weekISO.split("-").map(Number);
+      const thisW = new Date(wy, wm - 1, wd);
       const diff = Math.round((thisW.getTime() - lastW.getTime()) / (7 * 24 * 3600 * 1000));
       streakAfterPotential = diff === 1 ? 2 : 1;
     }
