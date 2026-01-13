@@ -14,11 +14,11 @@ export async function GET(req: NextRequest) {
   start.setUTCDate(now.getUTCDate() - 6);
 
   const { data, error: qErr } = await supabase
-    .from("task_completions")
-    .select("completed_at, rep_awarded")
+    .from("reputation_events")
+    .select("created_at, delta")
     .eq("user_id", user.id)
-    .gte("completed_at", start.toISOString())
-    .order("completed_at", { ascending: true });
+    .gte("created_at", start.toISOString())
+    .order("created_at", { ascending: true });
 
   if (qErr) return NextResponse.json({ error: qErr.message }, { status: 500 });
   return NextResponse.json({ completions: data ?? [] });

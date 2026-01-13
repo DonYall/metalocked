@@ -41,6 +41,7 @@ export default {
         destructive: {
           DEFAULT: "var(--destructive)",
           foreground: "var(--destructive-foreground)",
+          2: "var(--destructive-2)",
         },
         border: "var(--border)",
         input: "var(--input)",

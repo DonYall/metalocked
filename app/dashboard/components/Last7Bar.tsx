@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, CartesianGrid, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useDashboardRefresh } from "@/lib/useDashboardRefresh";
 
-type Completion = { completed_at: string; rep_awarded: number };
+type Completion = { created_at: string; delta: number };
 
 export default function Last7Bar() {
   const [data, setData] = useState<{ date: string; rep: number; count: number }[]>([]);
@@ -23,11 +23,11 @@ export default function Last7Bar() {
     const idx = new Map(days.map((d, i) => [d.date, i]));
 
     for (const c of completions) {
-      const local = new Date(c.completed_at);
+      const local = new Date(c.created_at);
       const key = local.toLocaleDateString("en-CA");
       const i = idx.get(key);
       if (i !== undefined) {
-        days[i].rep += c.rep_awarded ?? 0;
+        days[i].rep += c.delta ?? 0;
         days[i].count += 1;
       }
     }
@@ -49,7 +49,6 @@ export default function Last7Bar() {
   const chartConfig = {
     rep: {
       label: "rep",
-      color: "var(--accent-2)",
     },
   } satisfies ChartConfig;
 
@@ -60,7 +59,7 @@ export default function Last7Bar() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-h-32 w-full max-h-48">
-          <BarChart data={data} className="fill-accent-2">
+          <BarChart data={data}>
             <CartesianGrid vertical={false} opacity={0.1} />
             <XAxis
               dataKey="date"
@@ -74,7 +73,11 @@ export default function Last7Bar() {
               interval={0}
               allowDuplicatedCategory={true}
             />
-            <Bar dataKey="rep" radius={8} barSize={24} />
+            <Bar dataKey="rep" radius={8} barSize={24}>
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.rep >= 0 ? "var(--accent-2)" : "var(--destructive-2)"} />
+              ))}
+            </Bar>
             <ChartTooltip
               labelFormatter={(date) => {
                 const d = new Date(date + "T00:00");
