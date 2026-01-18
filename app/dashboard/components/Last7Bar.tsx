@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, CartesianGrid, Cell } from "recharts";
+import { BarChart, Bar, XAxis, CartesianGrid, Cell, YAxis, ReferenceLine } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useDashboardRefresh } from "@/lib/useDashboardRefresh";
@@ -61,6 +61,8 @@ export default function Last7Bar() {
         <ChartContainer config={chartConfig} className="min-h-32 w-full max-h-48">
           <BarChart data={data}>
             <CartesianGrid vertical={false} opacity={0.1} />
+            <ReferenceLine y={0} stroke="gray" strokeDasharray="3 3" />
+            <YAxis hide interval={0} />
             <XAxis
               dataKey="date"
               tickFormatter={(date) => {
@@ -73,7 +75,7 @@ export default function Last7Bar() {
               interval={0}
               allowDuplicatedCategory={true}
             />
-            <Bar dataKey="rep" radius={8} barSize={24}>
+            <Bar dataKey="rep" radius={6} barSize={24}>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.rep >= 0 ? "var(--accent-2)" : "var(--destructive-2)"} />
               ))}

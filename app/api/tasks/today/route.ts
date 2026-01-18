@@ -38,10 +38,24 @@ export async function GET(_: NextRequest) {
   const todayISO = now.toISOString().slice(0, 10);
 
   const getWeekMondayISO = (d: Date) => {
-    const day = d.getUTCDay();
-    const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
-    monday.setUTCDate(monday.getUTCDate() - day + 1);
-    return monday.toISOString().slice(0, 10);
+    const fmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: userTimezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      weekday: "long",
+    });
+    const parts = fmt.formatToParts(d);
+    const dayName = parts.find((p) => p.type === "weekday")?.value;
+    const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(dayName!);
+    const year = parseInt(parts.find((p) => p.type === "year")?.value || "");
+    const month = parseInt(parts.find((p) => p.type === "month")?.value || "");
+    const day = parseInt(parts.find((p) => p.type === "day")?.value || "");
+
+    const date = new Date(year, month - 1, day);
+    date.setDate(date.getDate() - dayOfWeek + 1);
+
+    return date.toISOString().slice(0, 10);
   };
   const weekISO = getWeekMondayISO(now);
 
