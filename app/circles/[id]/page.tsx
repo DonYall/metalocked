@@ -10,7 +10,7 @@ async function getData(circleId: string) {
   return { members, events };
 }
 
-export default async function CirclePage({ params }: { params: { id: string } }) {
+export default async function CirclePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { members, events } = await getData(id);
 
